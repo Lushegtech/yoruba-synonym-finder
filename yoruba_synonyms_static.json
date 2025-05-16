@@ -1,0 +1,162 @@
+{
+  "ọjọ́": {
+    "headword": "ọjọ́",
+    "pos": "noun",
+    "synonyms": ["ààrọ̀", "ìgbà", "àsìkò", "ọsẹ̀", "irọlẹ́"],
+    "definition": "Day, time, or a period of 24 hours.",
+    "example": {
+      "yorùbá": "Ọjọ́ òní dára.",
+      "en": "Today is a good day."
+    }
+  },
+  "ilé": {
+    "headword": "ilé",
+    "pos": "noun",
+    "synonyms": ["ilẹ̀", "ibùgbé", "afin", "ààfin", "ìdí"],
+    "definition": "House or building where people live or work.",
+    "example": {
+      "yorùbá": "Mo wà ní ilé mi.",
+      "en": "I am at my house."
+    }
+  },
+  "ẹ̀kọ́": {
+    "headword": "ẹ̀kọ́",
+    "pos": "noun",
+    "synonyms": ["ìmọ̀", "ìkẹ́kọ̀ọ́", "ẹ̀kọ́sílẹ̀", "ìwé", "àmọ̀"],
+    "definition": "Education, learning, or study.",
+    "example": {
+      "yorùbá": "Ẹ̀kọ́ jẹ́ pàtàkì.",
+      "en": "Education is important."
+    }
+  },
+  "ọmọ": {
+    "headword": "ọmọ",
+    "pos": "noun",
+    "synonyms": ["ọmọbíbí", "àbíkẹ́", "arọ́mọdọ́mọ", "ọmọkùnrin", "ọmọbìnrin"],
+    "definition": "Child, offspring, or young person.",
+    "example": {
+      "yorùbá": "Ọmọ náà ń sùn.",
+      "en": "The child is sleeping."
+    }
+  },
+  "isẹ́": {
+    "headword": "isẹ́",
+    "pos": "noun",
+    "synonyms": ["iṣẹ́", "àṣẹ", "ìwọ̀nkọ̀", "àṣekára", "àkọsílẹ̀"],
+    "definition": "Work, job, or occupation.",
+    "example": {
+      "yorùbá": "Isẹ́ mi dára.",
+      "en": "My job is good."
+    }
+  },
+  "oúnjẹ": {
+    "headword": "oúnjẹ",
+    "pos": "noun",
+    "synonyms": ["jíjẹ", "àsè", "ìjẹun", "ọ̀nà", "ohun jíjẹ"],
+    "definition": "Food or nourishment.",
+    "example": {
+      "yorùbá": "Oúnjẹ yìí dùn.",
+      "en": "This food is delicious."
+    }
+  },
+  "àgbà": {
+    "headword": "àgbà",
+    "pos": "noun",
+    "synonyms": ["arúgbó", "àkúkọ", "dàgbà", "ọ̀gágun", "agbalagba"],
+    "definition": "Elder, senior person, or adult.",
+    "example": {
+      "yorùbá": "Àgbà náà ń bọ̀.",
+      "en": "The elder is coming."
+    }
+  },
+  "ọ̀rọ̀": {
+    "headword": "ọ̀rọ̀",
+    "pos": "noun",
+    "synonyms": ["ìsọrọ", "ẹ̀kúnrẹ́rẹ́", "àsọyé", "ìfọ̀rọ̀wérọ̀", "ìtumọ̀"],
+    "definition": "Word, speech, or conversation.",
+    "example": {
+      "yorùbá": "Ọ̀rọ̀ rẹ dùn.",
+      "en": "Your words are sweet."
+    }
+  },
+  "ìgbà": {
+    "headword": "ìgbà",
+    "pos": "noun",
+    "synonyms": ["àkókò", "ọjọ́", "àsìkò", "ìsẹ́jú", "ìwákàtí"],
+    "definition": "Time, period, or season.",
+    "example": {
+      "yorùbá": "Ìgbà òjò ti dé.",
+      "en": "The rainy season has arrived."
+    }
+  },
+  "ìwé": {
+    "headword": "ìwé",
+    "pos": "noun",
+    "synonyms": ["ìwé kíkà", "àkọsílẹ̀", "ìwé ìròyìn", "ìkàwé", "ìwé ìtàn"],
+    "definition": "Book, paper, or document.",
+    "example": {
+      "yorùbá": "Mo rí ìwé mi.",
+      "en": "I found my book."
+    }
+  },
+  "omi": {
+    "headword": "omi",
+    "pos": "noun",
+    "synonyms": ["ìdàdò", "ìkòrò", "adágún", "odo", "odò"],
+    "definition": "Water or liquid.",
+    "example": {
+      "yorùbá": "Mo fẹ́ mu omi.",
+      "en": "I want to drink water."
+    }
+  },
+  "dára": {
+    "headword": "dára",
+    "pos": "adjective",
+    "synonyms": ["pẹ̀lẹ́", "rẹwà", "tòótọ́", "dáradára", "ṣàn"],
+    "definition": "Good, fine, or beautiful.",
+    "example": {
+      "yorùbá": "Aṣọ yìí dára púpọ̀.",
+      "en": "This cloth is very good."
+    }
+  },
+  "gbogbo": {
+    "headword": "gbogbo",
+    "pos": "adjective",
+    "synonyms": ["kúlọ̀ọ̀", "òpó", "kátà", "tútùpọ̀", "kúkúrú"],
+    "definition": "All, every, or whole.",
+    "example": {
+      "yorùbá": "Gbogbo àwọn ọmọ wá.",
+      "en": "All the children came."
+    }
+  },
+  "kékeré": {
+    "headword": "kékeré",
+    "pos": "adjective",
+    "synonyms": ["díẹ̀", "wẹ́wẹ́", "kúkúrú", "tínrín", "bíntín"],
+    "definition": "Small, little, or tiny.",
+    "example": {
+      "yorùbá": "Ìwé kékeré ni.",
+      "en": "It is a small book."
+    }
+  },
+  "púpọ̀": {
+    "headword": "púpọ̀",
+    "pos": "adjective",
+    "synonyms": ["tótó", "jù", "lọ́pọlọ́pọ̀", "tópọ̀", "pọ̀"],
+    "definition": "Many, plenty, or abundant.",
+    "example": {
+      "yorùbá": "Àwọn ènìyàn púpọ̀ wà níbẹ̀.",
+      "en": "Many people were there."
+    }
+  },
+  "jù": {
+    "headword": "jù",
+    "pos": "verb",
+    "synonyms": ["dàá", "sọ", "dàrú", "gbọ́n", "fi"],
+    "definition": "To throw, cast, or exceed.",
+    "example": {
+      "yorùbá": "Má jù ìwé náà sílẹ̀.",
+      "en": "Don't throw the book down."
+    }
+  }
+} 
