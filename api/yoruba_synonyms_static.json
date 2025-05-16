@@ -1,0 +1,102 @@
+{
+  "ọjọ́": {
+    "headword": "ọjọ́",
+    "pos": "noun",
+    "synonyms": ["ààrọ̀", "ìgbà", "àsìkò", "ọsẹ̀", "irọlẹ́"]
+  },
+  "ilé": {
+    "headword": "ilé",
+    "pos": "noun",
+    "synonyms": ["ilẹ̀", "ibùgbé", "afin", "ààfin", "ìdí"]
+  },
+  "ẹ̀kọ́": {
+    "headword": "ẹ̀kọ́",
+    "pos": "noun",
+    "synonyms": ["ìmọ̀", "ìkẹ́kọ̀ọ́", "ẹ̀kọ́sílẹ̀", "ìwé", "àmọ̀"]
+  },
+  "ọmọ": {
+    "headword": "ọmọ",
+    "pos": "noun",
+    "synonyms": ["ọmọbíbí", "àbíkẹ́", "arọ́mọdọ́mọ", "ọmọkùnrin", "ọmọbìnrin"]
+  },
+  "isẹ́": {
+    "headword": "isẹ́",
+    "pos": "noun",
+    "synonyms": ["iṣẹ́", "àṣẹ", "ìwọ̀nkọ̀", "àṣekára", "àkọsílẹ̀"]
+  },
+  "oúnjẹ": {
+    "headword": "oúnjẹ",
+    "pos": "noun",
+    "synonyms": ["jíjẹ", "àsè", "ìjẹun", "ọ̀nà", "ohun jíjẹ"]
+  },
+  "àgbà": {
+    "headword": "àgbà",
+    "pos": "noun",
+    "synonyms": ["arúgbó", "àkúkọ", "dàgbà", "ọ̀gágun", "agbalagba"]
+  },
+  "ọ̀rọ̀": {
+    "headword": "ọ̀rọ̀",
+    "pos": "noun",
+    "synonyms": ["ìsọrọ", "ẹ̀kúnrẹ́rẹ́", "àsọyé", "ìfọ̀rọ̀wérọ̀", "ìtumọ̀"]
+  },
+  "ìgbà": {
+    "headword": "ìgbà",
+    "pos": "noun",
+    "synonyms": ["àkókò", "ọjọ́", "àsìkò", "ìsẹ́jú", "ìwákàtí"]
+  },
+  "ìwé": {
+    "headword": "ìwé",
+    "pos": "noun",
+    "synonyms": ["ìwé kíkà", "àkọsílẹ̀", "ìwé ìròyìn", "ìkàwé", "ìwé ìtàn"]
+  },
+  "omi": {
+    "headword": "omi",
+    "pos": "noun",
+    "synonyms": ["ìdàdò", "ìkòrò", "adágún", "odo", "odò"]
+  },
+  "dára": {
+    "headword": "dára",
+    "pos": "adjective",
+    "synonyms": ["pẹ̀lẹ́", "rẹwà", "tòótọ́", "dáradára", "ṣàn"]
+  },
+  "gbogbo": {
+    "headword": "gbogbo",
+    "pos": "adjective",
+    "synonyms": ["kúlọ̀ọ̀", "òpó", "kátà", "tútùpọ̀", "kúkúrú"]
+  },
+  "kékeré": {
+    "headword": "kékeré",
+    "pos": "adjective",
+    "synonyms": ["díẹ̀", "wẹ́wẹ́", "kúkúrú", "tínrín", "bíntín"]
+  },
+  "púpọ̀": {
+    "headword": "púpọ̀",
+    "pos": "adjective",
+    "synonyms": ["tótó", "jù", "lọ́pọlọ́pọ̀", "tópọ̀", "pọ̀"]
+  },
+  "jù": {
+    "headword": "jù",
+    "pos": "verb",
+    "synonyms": ["dàá", "sọ", "dàrú", "gbọ́n", "fi"]
+  },
+  "mu": {
+    "headword": "mu",
+    "pos": "verb",
+    "synonyms": ["fà", "mímu", "mímú", "fàmú", "gbà"]
+  },
+  "jẹ": {
+    "headword": "jẹ",
+    "pos": "verb",
+    "synonyms": ["gbà", "jẹun", "fẹ́", "gbé", "mú"]
+  },
+  "wá": {
+    "headword": "wá",
+    "pos": "verb",
+    "synonyms": ["bọ̀", "dé", "padà", "fẹ́", "bẹ̀rẹ̀"]
+  },
+  "lọ": {
+    "headword": "lọ",
+    "pos": "verb",
+    "synonyms": ["rìn", "kúrò", "jáde", "lọsí", "sálọ"]
+  }
+} 

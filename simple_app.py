@@ -2,25 +2,40 @@
 # -*- coding: utf-8 -*-
 
 """
-simple_app.py - Streamlit web app for the Yoruba synonym finder using a static dictionary
+simple_app.py - Streamlit web app for the Yoruba synonym finder using a massive dictionary
 """
 
 import streamlit as st
 import json
 import difflib
+import os
+import time
 
 # --- Dictionary Loading and Search Functions ---
 
-def load_dictionary(dict_file):
+@st.cache_data(ttl=3600)  # Cache the dictionary for 1 hour
+def load_dictionary(dict_files):
     """
     Load the Yoruba synonyms dictionary from a JSON file.
+    Tries each file in the provided list until one succeeds.
     """
-    try:
-        with open(dict_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        st.error(f"Error loading dictionary: {e}")
-        return {}
+    for dict_file in dict_files:
+        try:
+            start_time = time.time()
+            st.info(f"Loading dictionary from {dict_file}...")
+            
+            with open(dict_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            load_time = time.time() - start_time
+            st.success(f"Successfully loaded {len(data)} entries in {load_time:.2f} seconds")
+            return data
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            st.warning(f"Could not load {dict_file}: {e}")
+            continue
+    
+    st.error("Failed to load any dictionary files.")
+    return {}
 
 def normalize_word(word):
     """
@@ -30,30 +45,53 @@ def normalize_word(word):
 
 def search_synonyms(query, dictionary, max_results=3):
     """
-    Search for synonyms of the given query word using the static dictionary.
+    Search for synonyms of the given query word using the dictionary.
     """
+    start_time = time.time()
     query = normalize_word(query)
     
     # Direct match - check if word exists directly in the dictionary
     if query in dictionary:
-        return [{"rank": 1, "similarity": 1.0, "entry": dictionary[query]}]
+        search_time = time.time() - start_time
+        return [{"rank": 1, "similarity": 1.0, "entry": dictionary[query], "search_time": search_time}]
     
     # Fuzzy match - find closest matches for unknown words
     results = []
     
-    # Check if query is in any of the synonyms
+    # Check if query is in any of the synonyms (up to a limit to maintain performance)
+    synonym_check_limit = 1000
+    synonym_checks = 0
+    
     for headword, entry in dictionary.items():
+        if synonym_checks >= synonym_check_limit:
+            break
+            
+        synonym_checks += 1
         for synonym in entry["synonyms"]:
             if normalize_word(synonym) == query:
+                search_time = time.time() - start_time
                 results.append({
                     "rank": 1,
                     "similarity": 1.0,
-                    "entry": entry
+                    "entry": entry,
+                    "search_time": search_time
                 })
                 return results  # Found exact match in synonyms
     
-    # Use difflib to find fuzzy matches
-    matches = difflib.get_close_matches(query, dictionary.keys(), n=max_results, cutoff=0.6)
+    # Use difflib to find fuzzy matches - only check a subset of keys for very large dictionaries
+    dict_keys = list(dictionary.keys())
+    
+    # Sampling keys for large dictionaries to improve performance
+    if len(dict_keys) > 10000:
+        # Take a sample of common words + random words
+        # For large dictionaries, we'll check the first 500 entries (likely common words)
+        # plus a random sampling of 2500 more entries
+        import random
+        sampled_keys = dict_keys[:500] + random.sample(dict_keys[500:], min(2500, len(dict_keys) - 500))
+    else:
+        sampled_keys = dict_keys
+    
+    matches = difflib.get_close_matches(query, sampled_keys, n=max_results, cutoff=0.6)
     
     for i, match in enumerate(matches):
         # Calculate a similarity score (1.0 to 0.0)
@@ -61,7 +99,8 @@ def search_synonyms(query, dictionary, max_results=3):
         results.append({
             "rank": i + 1,
             "similarity": similarity,
-            "entry": dictionary[match]
+            "entry": dictionary[match],
+            "search_time": time.time() - start_time
         })
     
     return results
@@ -219,6 +258,21 @@ def main():
         vertical-align: middle;
         margin: 0 10px;
     }
+
+    /* Stats styling */
+    .stats-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        color: #555;
+    }
+    
+    .stats-label {
+        font-weight: 600;
+        color: #4682B4;
+    }
     </style>
     """, unsafe_allow_html=True)
     
@@ -237,12 +291,26 @@ def main():
     </div>
     """, unsafe_allow_html=True)
     
+    # Try to load dictionaries in order of preference
+    dictionary_files = [
+        'yoruba_synonyms_massive.json',  # First try massive dictionary
+        'yoruba_synonyms_expanded.json', # Then expanded dictionary
+        'yoruba_synonyms_static.json'    # Finally fallback to static dictionary
+    ]
+    
     # Load the dictionary
-    dictionary = load_dictionary('yoruba_synonyms_static.json')
+    dictionary = load_dictionary(dictionary_files)
     
     if not dictionary:
-        st.error("Could not load the dictionary file. Please check that 'yoruba_synonyms_static.json' exists.")
+        st.error("Could not load any dictionary file. Please generate a dictionary first.")
         return
+    
+    # Display dictionary stats
+    st.markdown(f"""
+    <div class="stats-container">
+        <span class="stats-label">Dictionary size:</span> {len(dictionary):,} entries
+    </div>
+    """, unsafe_allow_html=True)
     
     # Create the search interface
     col1, col2 = st.columns([3, 1])
@@ -253,27 +321,32 @@ def main():
                              help="Type a Yorùbá word to find its synonyms")
     
     with col2:
-        max_results = st.selectbox("Max results:", [1, 2, 3, 5], index=2)
+        max_results = st.selectbox("Max results:", [1, 2, 3, 5, 10], index=2)
     
     # Add a search button
     search_button = st.button("Find Synonyms", type="primary")
     
-    # Display dictionary info
+    # Display dictionary info in expander
     with st.expander("Dictionary Information"):
-        st.info(f"Loaded static dictionary with {len(dictionary)} entries.")
+        st.info(f"Using dictionary with {len(dictionary):,} entries.")
         
-        # Show available words
-        st.write("Available words:")
+        # Show some random sample words
+        import random
+        st.write("Sample of available words:")
         
         num_cols = 3
         cols = st.columns(num_cols)
         
-        # Sort the headwords alphabetically
-        sorted_words = sorted(dictionary.keys())
+        # Pick some random words to display
+        sample_size = min(30, len(dictionary))
+        sample_words = random.sample(list(dictionary.keys()), sample_size)
+        sample_words.sort()  # Sort alphabetically for display
         
-        # Display words in multiple columns
-        for i, word in enumerate(sorted_words):
+        # Display words in columns
+        for i, word in enumerate(sample_words):
             cols[i % num_cols].write(f"• {word}")
+        
+        st.write("*Note: This is just a small sample. The full dictionary contains many more words.*")
     
     # Process search when button is clicked
     if search_button and query:
@@ -285,11 +358,17 @@ def main():
                 
                 # Suggest some available words
                 st.write("Try one of these words instead:")
-                suggestions = sorted(dictionary.keys())[:10]
-                for suggestion in suggestions:
-                    st.write(f"• {suggestion}")
+                
+                # Get some random suggestions from dictionary
+                suggestions = random.sample(list(dictionary.keys()), min(10, len(dictionary)))
+                
+                # Display in two columns
+                suggestion_cols = st.columns(2)
+                for i, suggestion in enumerate(suggestions):
+                    suggestion_cols[i % 2].write(f"• {suggestion}")
             else:
-                st.success(f"Found {len(results)} results for '{query}'")
+                search_time = results[0].get("search_time", 0)
+                st.success(f"Found {len(results)} results for '{query}' in {search_time:.4f} seconds")
                 
                 # Display results
                 for result in results:
@@ -297,22 +376,27 @@ def main():
                     similarity = result["similarity"]
                     
                     with st.container():
-                        synonyms_html = ' '.join([f"<span class='chip'>{s}</span>" for s in entry['synonyms']])
+                        # Limit the number of synonyms shown if there are many
+                        synonyms_to_show = entry['synonyms'][:10]  # Show up to 10 synonyms
+                        has_more = len(entry['synonyms']) > 10
+                        
+                        synonyms_html = ' '.join([f"<span class='chip'>{s}</span>" for s in synonyms_to_show])
+                        if has_more:
+                            synonyms_html += f" <span style='color:#777; font-size:0.8em;'>+{len(entry['synonyms']) - 10} more</span>"
+                        
                         st.markdown(f"""
                         <div class='result-card'>
                             <h3>{entry['headword']} <span style='color:#555; font-size:0.8em;'>({entry['pos']})</span></h3>
                             <p><span class='highlight'>Synonyms:</span> {synonyms_html}</p>
-                            <p><span class='highlight'>Definition:</span> {entry['definition']}</p>
-                            <p class='example'><span class='highlight'>Example (Yorùbá):</span> {entry['example']['yorùbá']}</p>
-                            <p class='example'><span class='highlight'>Example (English):</span> {entry['example']['en']}</p>
                             <p style='color:#777; font-size:0.8em;'>Match score: {similarity:.2f}</p>
                         </div>
                         """, unsafe_allow_html=True)
     
     # Footer
-    st.markdown("""
+    dictionary_type = "massive" if len(dictionary) >= 100000 else "expanded" if len(dictionary) >= 2500 else "basic"
+    st.markdown(f"""
     <div class='footer'>
-        <p>Yorùbá Synonym Finder - A simplified dictionary-based approach</p>
+        <p>Yorùbá Synonym Finder - Using {dictionary_type} dictionary with {len(dictionary):,} entries</p>
     </div>
     """, unsafe_allow_html=True)
 
