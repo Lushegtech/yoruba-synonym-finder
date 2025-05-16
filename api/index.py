@@ -3,6 +3,7 @@ import json
 import difflib
 import os
 import random
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -189,143 +190,334 @@ HTML_TEMPLATE = '''
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-card: #252525;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6194c7;
+            --accent-secondary: #4facfe;
+            --accent-tertiary: #43e97b;
+            --card-border: #333;
+            --input-bg: #2a2a2a;
+            --chip-bg: #2d3748;
+            --chip-text: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #fefefe 0%, #e8f4ff 100%);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
             padding: 20px;
-            color: #333;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(97, 148, 199, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(67, 233, 123, 0.05) 0%, transparent 50%);
         }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        
         h1 {
             text-align: center;
-            color: #2c3e50;
             margin: 0 0 20px 0;
+            font-size: 2.5rem;
+            font-weight: 700;
         }
+        
         .hero {
             text-align: center;
-            padding: 20px 0;
+            padding: 20px 0 30px 0;
         }
+        
         .logo-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 25px auto;
         }
+        
         .logo-letter {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 6px;
-            border-radius: 8px;
+            margin: 0 8px;
+            border-radius: 12px;
             color: white;
             font-weight: bold;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 26px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transform: translateY(0);
-            transition: transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+        
         .logo-letter:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
         }
+        
         .logo-y {
             background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 100%);
         }
+        
         .logo-s {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transform: translateY(-5px);
         }
+        
         .logo-f {
             background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
         }
+        
         .gradient-text {
-            background: linear-gradient(90deg, #A0E7E5 0%, #FBE7C6 50%, #FFAEBC 100%);
+            background: linear-gradient(90deg, #6194c7 0%, #a7c5e8 50%, #43e97b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            display: inline;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
+        
         .search-form {
             display: flex;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
+        
+        .search-form:focus-within {
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
         .search-input {
             flex-grow: 1;
-            padding: 10px 15px;
+            padding: 16px 20px;
             font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px 0 0 5px;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 12px 0 0 12px;
             outline: none;
+            transition: all 0.3s ease;
         }
+        
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+        
         .search-button {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 0 25px;
+            background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-tertiary) 100%);
             color: white;
             border: none;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 12px 12px 0;
             cursor: pointer;
             font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            font-size: 16px;
         }
+        
+        .search-button:hover {
+            filter: brightness(1.1);
+            transform: translateX(2px);
+        }
+        
         .result-card {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
             margin-bottom: 20px;
-            border-left: 5px solid #4682B4;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .highlight {
-            font-weight: bold;
-            color: #4682B4;
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(to bottom, var(--accent-secondary), var(--accent-tertiary));
+            border-radius: 3px 0 0 3px;
         }
-        .chip {
-            background-color: #e8f4ff;
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .pos-tag {
+            margin-left: 10px;
+            padding: 3px 10px;
             border-radius: 20px;
-            padding: 4px 12px;
-            margin: 2px;
-            display: inline-block;
+            background-color: rgba(97, 148, 199, 0.2);
+            color: var(--accent-primary);
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .chip {
+            background-color: var(--chip-bg);
+            border-radius: 50px;
+            padding: 6px 14px;
+            color: var(--chip-text);
             font-weight: 500;
-            color: #2c3e50;
             font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        .chip:hover {
+            background-color: var(--accent-primary);
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .more-count {
+            color: var(--text-secondary);
+            font-size: 0.8em;
+            margin-left: 10px;
+            opacity: 0.8;
+        }
+        
         .stats-container {
-            background-color: #f8f9fa;
+            background-color: var(--bg-card);
             border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            color: #555;
+            padding: 12px 18px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+        
         .stats-label {
             font-weight: 600;
-            color: #4682B4;
+            color: var(--accent-primary);
         }
+        
         .footer {
             text-align: center;
-            margin-top: 30px;
-            color: #777;
+            margin-top: 40px;
+            color: var(--text-secondary);
             font-size: 0.8em;
+            opacity: 0.7;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
         }
+        
+        .no-results {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            border: 1px dashed var(--card-border);
+        }
+        
+        .suggestions {
+            margin-top: 20px;
+        }
+        
+        .suggestions-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .suggestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .suggestion-item {
+            background-color: var(--chip-bg);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            color: var(--chip-text);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .suggestion-item:hover {
+            background-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+        
         @media (max-width: 600px) {
             .search-form {
                 flex-direction: column;
             }
             .search-input {
-                border-radius: 5px;
-                margin-bottom: 10px;
+                border-radius: 12px 12px 0 0;
+                padding: 14px 16px;
             }
             .search-button {
-                border-radius: 5px;
+                border-radius: 0 0 12px 12px;
+                padding: 14px 16px;
+                width: 100%;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -342,11 +534,25 @@ HTML_TEMPLATE = '''
         </div>
         
         <div class="stats-container">
-            <span class="stats-label">Dictionary size:</span> <span id="dictionary-size">{{ dictionary_size }}</span> entries
+            <div>
+                <span class="stats-label">Dictionary:</span> 
+                <span id="dictionary-type">
+                    {% if dictionary_size >= 100000 %}Massive
+                    {% elif dictionary_size >= 2500 %}Expanded
+                    {% else %}Basic
+                    {% endif %}
+                </span>
+            </div>
+            <div>
+                <span class="stats-label">Entries:</span> 
+                <span id="dictionary-size">{{ "{:,}".format(dictionary_size) }}</span>
+            </div>
         </div>
         
         <form class="search-form" id="search-form">
-            <input type="text" class="search-input" id="query" name="query" placeholder="Enter a Yorùbá word (e.g. ilé, ọmọ, omi)" value="{{ query }}">
+            <input type="text" class="search-input" id="query" name="query" 
+                   placeholder="Enter a Yorùbá word (e.g. ilé, ọmọ, omi)" 
+                   value="{{ query }}" autofocus>
             <button type="submit" class="search-button">Find Synonyms</button>
         </form>
         
@@ -354,25 +560,53 @@ HTML_TEMPLATE = '''
             {% if results %}
                 {% for result in results %}
                     <div class="result-card">
-                        <h3>{{ result.headword }} <span style="color:#555; font-size:0.8em;">({{ result.pos }})</span></h3>
-                        <p><span class="highlight">Synonyms:</span> 
-                            {% for synonym in result.synonyms[:10] %}
-                                <span class="chip">{{ synonym }}</span>
-                            {% endfor %}
-                            {% if result.synonyms|length > 10 %}
-                                <span style="color:#777; font-size:0.8em;">+{{ result.synonyms|length - 10 }} more</span>
-                            {% endif %}
-                        </p>
-                        <p style="color:#777; font-size:0.8em;">Match score: {{ "%.2f"|format(result.similarity) }}</p>
+                        <h3>
+                            {{ result.headword }} 
+                            <span class="pos-tag">{{ result.pos }}</span>
+                        </h3>
+                        <div>
+                            <span class="highlight">Synonyms:</span>
+                            <div class="chip-container"> 
+                                {% for synonym in result.synonyms[:10] %}
+                                    <span class="chip">{{ synonym }}</span>
+                                {% endfor %}
+                                {% if result.synonyms|length > 10 %}
+                                    <span class="more-count">+{{ result.synonyms|length - 10 }} more</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="color:var(--text-secondary); font-size:0.8em; margin-top:10px; text-align:right;">
+                            Match score: {{ "%.2f"|format(result.similarity) }}
+                        </div>
                     </div>
                 {% endfor %}
             {% elif query %}
-                <p>No synonyms found for '{{ query }}'.</p>
+                <div class="no-results">
+                    <p>No synonyms found for '{{ query }}'.</p>
+                    
+                    <div class="suggestions">
+                        <p class="suggestions-title">Try one of these words instead:</p>
+                        <div class="suggestion-grid">
+                            {% set random_words = namespace(words=[]) %}
+                            {% for word in dictionary.keys() %}
+                                {% if loop.index <= 8 %}
+                                    {% if random_words.words.append(word) %}{% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% for word in random_words.words|sort %}
+                                <div class="suggestion-item" onclick="document.getElementById('query').value='{{ word }}'; document.getElementById('search-form').submit();">
+                                    {{ word }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             {% endif %}
         </div>
         
         <div class="footer">
-            <p>Yorùbá Synonym Finder - Using {% if dictionary_size >= 100000 %}massive{% elif dictionary_size >= 2500 %}expanded{% else %}basic{% endif %} dictionary with {{ dictionary_size }} entries</p>
+            <p>Yorùbá Synonym Finder &copy; {{ now.year }}</p>
         </div>
     </div>
     
@@ -381,6 +615,20 @@ HTML_TEMPLATE = '''
             e.preventDefault();
             const query = document.getElementById('query').value;
             window.location.href = `/?query=${encodeURIComponent(query)}`;
+        });
+        
+        // Add animation for results
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = document.querySelectorAll('.result-card');
+            results.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.4s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
         });
     </script>
 </body>
@@ -395,11 +643,15 @@ def index():
     if query:
         results = search_synonyms(query, max_results=5)
     
+    # Add current date for copyright
+    now = datetime.now()
+    
     return render_template_string(
         HTML_TEMPLATE, 
         query=query, 
         results=results, 
-        dictionary_size=len(dictionary)
+        dictionary_size=len(dictionary),
+        now=now
     )
 
 @app.route('/api/search', methods=['GET'])
